@@ -74,20 +74,20 @@ const readCat = (req, res) => {
   Cat.findByName(name1, callback);
 };
 
-const readAllDogs = (req, res, callBack) => {
-    Dog.find(callback).lean();
+const readAllDogs = (req, res, callback) => {
+  Dog.find(callback).lean();
 };
 
 const readDog = (req, res) => {
-    cont name1 = req.query.name;
-    
-    const callback = (err, doc) => {
-        if(err) {
-            return res.json({err});
-        }
-        return res.json(doc);
-    };
-    Dog.findByName(name1,callback);
+  const name1 = req.query.name;
+
+  const callback = (err, doc) => {
+    if (err) {
+      return res.json({ err });
+    }
+    return res.json(doc);
+  };
+  Dog.findByName(name1, callback);
 };
 
 // function to handle requests to the page1 page
@@ -136,16 +136,15 @@ const hostPage3 = (req, res) => {
 
 
 const hostPage4 = (req, res) => {
-    
-    const callback = (err, docs) => {
-        if (err) {
-        return res.status(500).json({ err }); // if error, return it
+  const callback = (err, docs) => {
+    if (err) {
+      return res.status(500).json({ err }); // if error, return it
     }
 
     // return success
     return res.render('page4', { dogs: docs });
   };
-  readAllDogs(req,res,callback);
+  readAllDogs(req, res, callback);
 };
 // function to handle get request to send the name
 // controller functions in Express receive the full HTTP request
@@ -209,34 +208,35 @@ const getDogName = (req, res) => {
 };
 
 const setDogName = (req, res) => {
-    if(!req.body.dogName || req.body.breed || req.body.age){
-          return res.status(400).json({ error: 'name, breed, and age are all required' });  
-    }
-    
-    const name = `${req.body.dogName}`;
-    
-    const dogData = {
-        name, 
-        breed: req.body.breed,
-        age: req.body.age,
-    };
-    
-    const newDog = new Dog(dogData);
-    
-    const savePromise = newDog.save();
-    
-    savePromise.then(() => {
-        lastDogAdded = newDog;
-        res.json({ 
-            name: lastDogAdded.name, breed: lastDogAdded.breed, age: lastDogAdded.age
-        });
-        
-  // if error, return it
-  savePromise.catch((err) => res.status(500).json({ err }));
+  if (!req.body.dogName || !req.body.breed || !req.body.age) {
+    return res.status(400).json({ error: 'name, breed, and age are all required' });
+  }
+
+  const name = `${req.body.dogName}`;
+
+  const dogData = {
+    name,
+    breed: req.body.breed,
+    age: req.body.age,
+  };
+
+  const newDog = new Dog(dogData);
+
+  const savePromise = newDog.save();
+
+  savePromise.then(() => {
+    lastDogAdded = newDog;
+    res.json({
+      name: lastDogAdded.name,
+      breed: lastDogAdded.breed,
+      age: lastDogAdded.age,
+    });
+  });
+
+  savePromise.catch((err) => res.json({ err }));
 
   return res;
-    })
-}
+};
 
 // function to handle requests search for a name and return the object
 // controller functions in Express receive the full HTTP request
@@ -304,22 +304,20 @@ const updateLast = (req, res) => {
 };
 
 const increaseAge = (req, res) => {
-    lastDogAdded.age++;
-    
-    const savePromise = lastDogAdded.save();
-    // send back the name as a success for now
-    savePromise.then(() => res.json({ 
-        name: lastDogAdded.name, 
-        breed: lastDogAdded.breed,
-        age: lastDogAdded.age,
-    },
-    ));
+  lastDogAdded.age++;
+
+  const savePromise = lastDogAdded.save();
+  // send back the name as a success for now
+  savePromise.then(() => res.json({
+    name: lastDogAdded.name,
+    breed: lastDogAdded.breed,
+    age: lastDogAdded.age,
+  }));
   savePromise.catch((err) => res.status(500).json({ err }));
 };
 
 
 const searchDog = (req, res) => {
-
   if (!req.query.name) {
     return res.status(400).json({ error: 'Name is required to perform a search' });
   }
@@ -334,11 +332,12 @@ const searchDog = (req, res) => {
       return res.json({ error: 'No dogs found' });
     }
 
+    increaseAge(req, res);
     // if a match, send the match back
-    return res.json({ 
-        name: doc.name, 
-        breed: doc.breed,
-        age: doc.age
+    return res.json({
+      name: doc.name,
+      breed: doc.breed,
+      age: doc.age,
     });
   });
 };
@@ -364,7 +363,7 @@ module.exports = {
   page1: hostPage1,
   page2: hostPage2,
   page3: hostPage3,
-  page4: hostpage4,
+  page4: hostPage4,
   readCat,
   readDog,
   getName,

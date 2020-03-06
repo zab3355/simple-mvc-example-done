@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 let DogModel = {};
 
 const DogSchema = new mongoose.Schema({
@@ -16,7 +15,7 @@ const DogSchema = new mongoose.Schema({
     trim: true,
     required: true,
   },
-    
+
   age: {
     type: Number,
     min: 0,
